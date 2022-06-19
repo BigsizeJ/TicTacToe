@@ -1,25 +1,64 @@
-const createBoard = () => {
-    let _board = []
+const __main__ = (() => {
+    let board = []
 
-    const board = () => {
-        for(let i = 0; i < 9; i++){
-            _board.push('')
-        }
+    for(let i = 0; i < 9; i++){
+        board.push('')
     }
 
-    board()
 
-    const showBoard = () => {
-        const board = document.querySelector('.board')
-        _board.forEach((item, index) => {
+
+   
+
+    const gameBoard = () => {
+        const _board_ = document.querySelector('.board')
+
+        board.forEach((item, index) => {
             const cell = document.createElement('div')
-            board.appendChild(cell)
+
+            _board_.appendChild(cell)
+
+        })
+
+        Array.from(_board_.children).forEach((cell, index) => {
+            cell.addEventListener('click', () => {
+                if(board[index] == ''){
+                    board[index] = 'X'
+               
+                }
+                else{
+                    return
+                }
+                
+                cell.style.backgroundColor = 'red'
+                checkWinner()
+            })
         })
     }
 
-    return {showBoard}
-}
+    const checkWinner = () => {
+        const RULES = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 4, 8],
+            [2, 4, 6],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8]
+        ]
 
-const board = createBoard()
+        RULES.forEach((item, index) => {
+            if(board[item[0]] == 'X' & board[item[1]] == 'X' & board[item[2]] == 'X'){
+                console.log('win')
+            }
+        })
+    }
 
-board.showBoard()
+
+
+    const play = () => {
+        gameBoard()
+    }
+
+    return {play};
+})();

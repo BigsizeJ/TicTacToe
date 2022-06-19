@@ -24,6 +24,7 @@ body{
 .board div{
     border-radius: 10px;
     border: 1px solid black;
+    font-size: 20rem;
     background-color: dodgerblue;
 }
 
@@ -31,3 +32,4 @@ body{
     cursor: pointer;
     background-color: rgba(0, 0, 0, .3);
 }
+
