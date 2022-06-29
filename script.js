@@ -8,7 +8,14 @@ const DOM = () => {
         board.appendChild(cell)
     }
 
-    return { createCell }
+    const reset = () => {
+        const cells = board.querySelectorAll('.cell')
+        cells.forEach((cell) => {
+            cell.textContent = ''
+        })
+    }
+
+    return {createCell, reset}
 }
 
 const Player = (name, mark) => {
@@ -28,12 +35,26 @@ const createBoard = () => {
 
 const gameBoard = (() => {
     const {board} = createBoard()
+    const {reset} = DOM()
     const cells = document.querySelectorAll('.cell')
     const playerOne = Player('jessie', 'X')
     const playerTwo = Player('bryce', 'O')
     let activePlayer = playerOne
     let ThereIsWinner = false
     let turnLeft = 9
+
+    const declaration = () => {
+        if(ThereIsWinner) {
+            console.log(`${activePlayer.name} Wins!`)
+            gameFinish()
+        } else if(turnLeft === 0){ 
+            console.log('Tie!')
+        }   else {
+            nextTurn()
+        }
+        
+
+    }
 
     const nextTurn = () => {
         activePlayer == playerOne ? activePlayer = playerTwo: activePlayer = playerOne
@@ -49,9 +70,11 @@ const gameBoard = (() => {
 
     
     const resetBoard = () => {
-        board.forEach((cell) => {
-            cell = ''
+        board.forEach((item, index, arr) => {
+            arr[index] = ''
         })
+        ThereIsWinner = false
+        turnLeft = 9
     }
     
     const start = () => {
@@ -63,15 +86,15 @@ const gameBoard = (() => {
             console.log(board[index])
             cell.innerHTML = activePlayer.mark
             checkWinner()
-            if(ThereIsWinner === false) {
-                if(turnLeft > 0) {
-                    nextTurn()
-                } else if(turnLeft == 0){
-                    console.log('Tie')
-                }
-            }
+            turnLeft--
+            declaration()
         }))
 
+    }
+
+    const gameFinish = () => {
+        resetBoard()
+        reset()
     }
 
     const checkWinner = () => {
@@ -85,15 +108,12 @@ const gameBoard = (() => {
             [0,4,8],    
             [2,4,6]
         ]
-      
-
         winnerRules.forEach((row) => {
             if(board[row[0]] === activePlayer.mark && board[row[1]] === activePlayer.mark && board[row[2]] === activePlayer.mark) {
                 ThereIsWinner = true
-                return ThereIsWinner
+           
             }
         })
     }
-
     start()
 })()

@@ -14,11 +14,15 @@ body{
     place-content: center;
     place-items: center;
 
+    .announce {
+        grid-column: 1/-1;
+    }
     .board{
         display: grid;
-        grid-template-columns: repeat(3, minmax(50px, 100px));
-        grid-template-rows: repeat(3, minmax(50px, 100px));
+        grid-template-columns: repeat(3, minmax(50px, 150px));
+        grid-template-rows: repeat(3, minmax(50px, 150px));
         gap: 1px;
+        border: 3px solid black;
         box-shadow: 0px 0px 10px #fefefe;
         .cell{
             display: grid;
@@ -28,6 +32,19 @@ body{
         }
         div:hover{
             background-color: rgb(255, 255, 255, .8);
+        }
+    }
+    .restart {
+        grid-row: 3;
+        grid-column: 1/-1;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .container {
+        .board {
+            grid-template-columns: repeat(3, 100px);
+            grid-template-rows: repeat(3, 100px);
         }
     }
 }
