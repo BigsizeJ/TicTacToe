@@ -17,25 +17,28 @@ const DOM = () => {
     }
 
     const announceTurn = (name) => {
-  
         announce.textContent = ''
-        const text = document.createElement('p')
-        text.className = 'announceText'
-
-        text.textContent = `${name}'s turn`
-        announce.appendChild(text)
+        announce.appendChild(createText(`${name}'s turn`))
     }
 
     const declareWinner = (name) => {
-        const text = document.createElement('p')
         announce.textContent = ''
-        text.className = 'announceText'
-
-        text.textContent = `${name}'s Win!`
-        announce.appendChild(text)
+        announce.appendChild(createText(`${name}'s Win!`))
     }
 
-    return {createCell, resetDOM, announceTurn, declareWinner}
+    const declareTie = () => {
+        announce.textContent = ''
+        announce.appendChild(createText(`Tie!`))
+    }
+
+    const createText = (text) => {
+        const p = document.createElement('p')
+        p.className = 'announceText'
+        p.textContent = text
+        return p
+    }
+
+    return {createCell, resetDOM, announceTurn, declareWinner, declareTie}
 }
 
 const Player = (name, mark) => {
@@ -57,7 +60,7 @@ const gameBoard = (() => {
     const playerOne = Player('Player X', 'X')
     const playerTwo = Player('Player O', 'O')
     const {board} = createBoard()
-    const {resetDOM, announceTurn, declareWinner} = DOM()
+    const {resetDOM, announceTurn, declareWinner, declareTie} = DOM()
     const cells = document.querySelectorAll('.cell')
     let activePlayer = playerOne
     let ThereIsWinner = false
@@ -69,7 +72,7 @@ const gameBoard = (() => {
             console.log(`${activePlayer.name} Wins!`)
             gameFinish()
         } else if(turnLeft === 0){ 
-            console.log('Tie!')
+            tieGame()
         }   else {
             nextTurn()
         }
@@ -96,6 +99,10 @@ const gameBoard = (() => {
         turnLeft = 9
         activePlayer = playerOne
     }
+
+    const tieGame = () => {
+        declareTie()
+    }
     
     const start = () => {
         const resetButton = document.querySelector('.btn-reset')
@@ -103,7 +110,7 @@ const gameBoard = (() => {
         cells.forEach((cell) => cell.addEventListener('click', () => {
             let index = cell.getAttribute('data')
             if(board[index] !== '') return
-            if(ThereIsWinner) return
+            if(ThereIsWinner || turnLeft === 0) return
             board[index] = activePlayer.mark
             cell.innerHTML = activePlayer.mark
             turnLeft--
