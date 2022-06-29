@@ -1,21 +1,41 @@
 
 const DOM = () => {
     const board = document.querySelector('.board')
-    
+    const announce = document.querySelector('.announce')
+
     const createCell = () => {
         const cell = document.createElement('div')
         cell.className = 'cell'
         board.appendChild(cell)
     }
 
-    const reset = () => {
+    const resetDOM = () => {
         const cells = board.querySelectorAll('.cell')
         cells.forEach((cell) => {
             cell.textContent = ''
         })
     }
 
-    return {createCell, reset}
+    const announceTurn = (name) => {
+  
+        announce.textContent = ''
+        const text = document.createElement('p')
+        text.className = 'announceText'
+
+        text.textContent = `${name}'s turn`
+        announce.appendChild(text)
+    }
+
+    const declareWinner = (name) => {
+        const text = document.createElement('p')
+        announce.textContent = ''
+        text.className = 'announceText'
+
+        text.textContent = `${name}'s Win!`
+        announce.appendChild(text)
+    }
+
+    return {createCell, resetDOM, announceTurn, declareWinner}
 }
 
 const Player = (name, mark) => {
@@ -34,14 +54,15 @@ const createBoard = () => {
 }
 
 const gameBoard = (() => {
+    const playerOne = Player('Player X', 'X')
+    const playerTwo = Player('Player O', 'O')
     const {board} = createBoard()
-    const {reset} = DOM()
+    const {resetDOM, announceTurn, declareWinner} = DOM()
     const cells = document.querySelectorAll('.cell')
-    const playerOne = Player('jessie', 'X')
-    const playerTwo = Player('bryce', 'O')
     let activePlayer = playerOne
     let ThereIsWinner = false
     let turnLeft = 9
+    announceTurn(activePlayer.name)
 
     const declaration = () => {
         if(ThereIsWinner) {
@@ -52,12 +73,11 @@ const gameBoard = (() => {
         }   else {
             nextTurn()
         }
-        
-
     }
 
     const nextTurn = () => {
         activePlayer == playerOne ? activePlayer = playerTwo: activePlayer = playerOne
+        announceTurn(activePlayer.name)
     }
 
     const setBoardIndex = () => {
@@ -67,34 +87,39 @@ const gameBoard = (() => {
             i++
         })
     }
-
     
-    const resetBoard = () => {
+    const resetGame = () => {
         board.forEach((item, index, arr) => {
             arr[index] = ''
         })
         ThereIsWinner = false
         turnLeft = 9
+        activePlayer = playerOne
     }
     
     const start = () => {
+        const resetButton = document.querySelector('.btn-reset')
         setBoardIndex()
         cells.forEach((cell) => cell.addEventListener('click', () => {
             let index = cell.getAttribute('data')
             if(board[index] !== '') return
+            if(ThereIsWinner) return
             board[index] = activePlayer.mark
-            console.log(board[index])
             cell.innerHTML = activePlayer.mark
-            checkWinner()
             turnLeft--
+            checkWinner()
             declaration()
         }))
 
+        resetButton.addEventListener('click', () => {
+            resetGame()
+            resetDOM()
+            announceTurn(activePlayer.name)
+        })
     }
 
     const gameFinish = () => {
-        resetBoard()
-        reset()
+        declareWinner(activePlayer.name)
     }
 
     const checkWinner = () => {
